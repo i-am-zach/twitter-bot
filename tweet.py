@@ -2,12 +2,17 @@ import os
 import time
 
 import tweepy
+import asyncio
 
+# Access Secret Keys for Authenticating Twitter Api Object
 access_token, access_token_secret, consumer_key, consumer_secret = [os.environ[key] for key in ['TWI_ACCESS_TOKEN', 'TWI_ACCESS_TOKEN_SECRET', 'TWI_API_KEY', 'TWI_API_SECRET_KEY']]
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
+
+def fake_tweet(status):
+    print(status)
 
 def send_tweet(status):
     """
@@ -31,20 +36,24 @@ def send_media_tweet(filename, status=""):
     else:
         api.update_with_media(filename)
 
-def timed_method(func, duration=30, loops=1, params=[]):
-    """
-    Method that will call a function a certain amount of (loops) given a time period of (duration)
+async def tweet_many(status_list=[], duration=0):
+    assert(duration > 0)
 
-    Params:
-        func (function) => The function/method that will be called on the loop
-        duration (int) => How long it will take for the code to execute
-        loops (int) => How many times the function will be called
-        params (list) => An list of lists. Each in the list will be unpacked as the parameters of the function
-    """
-    for i in range(loops):
-        if params:
-            func(*params[i])
-        else:
-            func()
-        time.sleep(duration/loops)
+    delay = duration / len(status_list)
+    for status in status_list:
+        send_tweet(status)
+        print(f"Sent tweet with status: {status}")
+        await asyncio.sleep(delay)
 
+async def main():
+    print(f"started at {time.strftime('/%X')}")
+
+    tasks = []
+    tasks.append(tweet_many(['Tweet 1', 'Tweet 2'], 2))
+    tasks.append(tweet_many(['Tweet 3', 'Tweet 4'], 2))
+    await asyncio.wait(tasks)
+
+    print(f"finished at {time.strftime('/%X')}")
+
+if __name__ == "__main__":
+    asyncio.run(main())
