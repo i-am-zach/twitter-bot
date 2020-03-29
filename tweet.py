@@ -87,6 +87,7 @@ Repeat: {repeat}""")
                 second=schedule_time.second,
                 msg="--reminder",
                 repeat="true")
+                await asyncio.sleep(5)
                 return
             else:
                 return
