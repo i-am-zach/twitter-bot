@@ -6,7 +6,9 @@ import asyncio
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from pprint import pprint
+from dotenv import load_dotenv
 
+load_dotenv(verbose=True)
 
 # Access Secret Keys for Authenticating Twitter Api Object
 access_token, access_token_secret, consumer_key, consumer_secret = [os.environ[key] for key in ['TWI_ACCESS_TOKEN', 'TWI_ACCESS_TOKEN_SECRET', 'TWI_API_KEY', 'TWI_API_SECRET_KEY']]
