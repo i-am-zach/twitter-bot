@@ -95,6 +95,11 @@ Repeat: {repeat}""")
             # Tweet has been sent, program either terminates or increments the time for the next day
             if repeat:
                 schedule_time += timedelta(days=1)
+                print(f"""
+Scheduled Tweet for {schedule_time}
+Message: {msg}
+Repeat: {repeat}
+""")
             else:
                 break
         await asyncio.sleep(1)
