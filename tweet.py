@@ -56,18 +56,6 @@ async def tweet_many(status_list=[], duration=0):
         print(f"Sent tweet with status: {status}")
         await asyncio.sleep(delay)
 
-async def tweet_every_minute(threshold=3):
-    start = datetime.now()
-    idx = 1
-    while True:
-        diff = datetime.now() - start
-        print(f"{diff.seconds} second(s)")
-        if diff.seconds % 60 == 0 and diff.seconds != 0:
-            print("One minute has gone by")
-            send_tweet(f"Tweet {idx}")
-            idx += 1
-        await asyncio.sleep(1)
-
 async def schedule_tweet(hour, minute, second, msg="--reminder", repeat=False):
     assert hour, "Hour argument is required"
     assert minute, "Minute argument is required"
@@ -94,9 +82,14 @@ Repeat: {repeat}""")
 
             # Tweet has been sent, program either terminates or increments the time for the next day
             if repeat:
-                schedule_time += timedelta(days=1)
+                schedule_tweet(hour=schedule_time.hour,
+                minute=schedule_time.minute,
+                second=schedule_time.second,
+                msg="--reminder",
+                repeat="true")
+                return
             else:
-                break
+                return
         await asyncio.sleep(1)
     
 async def get_tweets_from_user(userId=36155411, screen_name="JeffProbst"):
