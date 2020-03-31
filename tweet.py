@@ -84,7 +84,7 @@ async def schedule_tweet(hour, minute, second, msg="--reminder", repeat=False):
     if msg == "--reminder":
         msg = gen_msg(schedule_time)
         
-    log_scheduled_tweet()
+    log_scheduled_tweet(schedule_time, msg, repeat)
     while True:
         diff = datetime.now() - schedule_time
         if diff.seconds < 1:
@@ -94,7 +94,7 @@ async def schedule_tweet(hour, minute, second, msg="--reminder", repeat=False):
             if repeat:
                 schedule_time = schedule_time + timedelta(days=1)
                 msg = gen_msg(schedule_time)
-                log_scheduled_tweet()
+                log_scheduled_tweet(schedule_time, msg, repeat)
             else:
                 return
         await asyncio.sleep(1)
@@ -120,7 +120,7 @@ async def main(reminder="daily"):
 
     if reminder == "daily":
         task1 = asyncio.create_task(
-            schedule_tweet(hour=4+12, minute=4, second=0, msg="--reminder", repeat=True)
+            schedule_tweet(hour=2+12, minute=17, second=0, msg="--reminder", repeat=True)
         )
         task2 = asyncio.create_task(
             get_tweets_from_user("JeffProbst")
